@@ -1,5 +1,16 @@
-FROM nginx:alpine
-LABEL org.opencontainers.image.source="https://github.com/alext100/mono-pipline/tree/master/back-end-app"
-COPY dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production=false
+COPY . .
+RUN npm run build
+
+# ---- Production image ----
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3000
+CMD ["node", "dist/main.js"]
