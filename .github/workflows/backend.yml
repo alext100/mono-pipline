@@ -54,3 +54,5 @@ jobs:
                   push: true
                   tags: ghcr.io/${{ github.actor }}/ci-cd-example-back:latest # Añadimos el tag de la imagen apuntando al registry de Github
 
+            - name: Trigger Render deploy
+              run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
