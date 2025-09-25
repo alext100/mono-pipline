@@ -55,3 +55,13 @@ jobs:
                   context: ./front-end-app # El working directory
                   push: true
                   tags: ghcr.io/${{ github.actor }}/ci-cd-example-front:latest # Añadimos el tag de la imagen apuntando al registry de Github
+
+            - name: Deploy to Netlify
+              id: netlify_deploy
+              # Usamos el comando netlify deploy de la carpeta dist con el token de autenticación y el id del sitio
+              run: |
+                  netlify deploy \
+                    --dir dist \
+                    --site ${{ secrets.NETLIFY_SITE_ID }} \
+                    --auth ${{ secrets.NETLIFY_API_TOKEN }} \
+                    --prod
