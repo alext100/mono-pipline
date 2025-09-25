@@ -12,6 +12,9 @@ jobs:
             run:
                 working-directory: ./back-end-app
         runs-on: ubuntu-latest
+        permissions: # Añadimos permisos para que la acción pueda leer y escribir en el registry de Github
+            packages: write
+            contents: read
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -37,3 +40,10 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
+            - name: Build Docker Image
+              uses: docker/build-push-action@v5 # Utilizamos la acción de build y push de docker del marketplace. Esto hace el docker build y el docker push por debajo
+              with:
+                  context: ./back-end-app # El working directory
+                  push: true
+                  tags: ghcr.io/${{ github.actor }}/ci-cd-example-back:latest # Añadimos el tag de la imagen apuntando al registry de Github
+
